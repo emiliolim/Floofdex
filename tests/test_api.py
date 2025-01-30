@@ -1,0 +1,67 @@
+import pytest
+import requests
+from app import app, db, StuffedAnimals
+
+BASE_URL = 'http://127.0.0.1:5000'
+
+
+@pytest.fixture
+def client():
+    """Test client for floofdex"""
+    app.config['TESTING'] = True
+    app.config['SQL_ALCHEMY_DATABASE_URI'] = 'sqlite:///:memory'
+    # Create a test client
+    with app.test_client() as client:
+        # Set up the database
+        with app.app_context():
+            db.create_all()  # Create all database tables
+        yield client  # Provide the client to the test
+        # Tear down the database
+        with app.app_context():
+            db.drop_all()  # Drop all database tables after the test
+
+
+@pytest.fixture
+def test_animal_data():
+    """Fixture for test animal data"""
+    return {
+        "name": "meep",
+        "type": "dino",
+        "description": "a green horned dino",
+        "image_url": "http://127.0.0.1:5000/static/images/meep.png"
+    }
+
+
+def test_animals_get(client):
+    """Tests GET endpoint and return type"""
+    # Add a test animal to the database
+    with app.app_context():
+        test_animal = StuffedAnimals(
+            name="meep",
+            type="dino",
+            description="a green horned dino",
+            image_url="https://example.com/meep.jpg"
+        )
+        db.session.add(test_animal)
+        db.session.commit()
+
+    # Make a GET request to the /animals endpoint
+    response = client.get('/animals')
+    assert response.status_code == 200
+    data = response.get_json()
+    assert isinstance(data, list)
+    assert len(data) == 1
+    assert data[0]['name'] == "meep"
+
+
+def test_animals_post(client, test_animal_data):
+    """Posts test animal"""
+    # Make a POST request to the /animals endpoint
+    response = client.post('/animals', json=test_animal_data)
+    assert response.status_code == 201
+    assert response.get_json() == {"message": "animal added!"}
+
+    # Verify the animal was added to the database
+    with app.app_context():
+        animal = StuffedAnimals.query.first()
+        assert animal.name == "meep"
