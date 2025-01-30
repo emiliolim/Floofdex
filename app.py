@@ -37,7 +37,7 @@ def get_animals():
         'image_url': animal.image_url
     } for animal in animals])
 
-
+# comment
 @app.route('/animals', methods=['POST'])
 def add_animal():
     """
