@@ -1,7 +1,7 @@
 import pytest
 import requests
 from app import app, db, StuffedAnimals
-
+from sqlalchemy.orm import Session
 BASE_URL = 'http://127.0.0.1:5000'
 
 
@@ -55,7 +55,7 @@ def test_animals_get(client):
 
 
 def test_animals_post(client, test_animal_data):
-    """Posts test animal"""
+    """tests POST endpoint"""
     # Make a POST request to the /animals endpoint
     response = client.post('/animals', json=test_animal_data)
     assert response.status_code == 201
@@ -65,3 +65,44 @@ def test_animals_post(client, test_animal_data):
     with app.app_context():
         animal = StuffedAnimals.query.first()
         assert animal.name == "meep"
+
+
+def test_animals_put(client, test_animal_data):
+    """tests PUT endpoint"""
+    # Add a test animal to the database
+    with app.app_context():
+        test_animal = StuffedAnimals(
+            name="meep",
+            type="dino",
+            description="a green horned dino",
+            image_url="https://example.com/meep.jpg"
+        )
+        db.session.add(test_animal)
+        db.session.commit()
+        animal_id = test_animal.id
+
+    # Updated animal data
+    updated_data = {
+        "name": "noop",
+        "type": "chicken nugget dino",
+        "description": "this guy is noop!",
+        "image_url": "https://example.com/noop.jpg"
+    }
+
+    # sent put request
+    response = client.put(f'/animals/{animal_id}', json=updated_data)
+
+    # manage return
+    assert response.status_code == 200
+    assert response.get_json() == {"message": "animal updated!"}
+
+    # verify updates
+    with app.app_context():
+        animal = db.session.get(StuffedAnimals, animal_id)
+        assert animal.name == "noop"
+        assert animal.type == "chicken nugget dino"
+        assert animal.description == "this guy is noop!"
+        assert animal.image_url == "https://example.com/noop.jpg"
+
+
+
