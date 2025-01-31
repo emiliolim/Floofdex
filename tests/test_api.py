@@ -1,15 +1,22 @@
 import pytest
-import requests
-from app import app, db, StuffedAnimals
-from sqlalchemy.orm import Session
+from app.routes import *
+import warnings
+from sqlalchemy import exc as sa_exc
+
 BASE_URL = 'http://127.0.0.1:5000'
 
 
 @pytest.fixture
 def client():
     """Test client for floofdex"""
+    # create sample database from local storage
     app.config['TESTING'] = True
     app.config['SQL_ALCHEMY_DATABASE_URI'] = 'sqlite:///:memory'
+
+    # ignore legacy warnings
+    warnings.simplefilter("default")
+    warnings.simplefilter("ignore", category=sa_exc.LegacyAPIWarning)
+
     # Create a test client
     with app.test_client() as client:
         # Set up the database
@@ -103,6 +110,3 @@ def test_animals_put(client, test_animal_data):
         assert animal.type == "chicken nugget dino"
         assert animal.description == "this guy is noop!"
         assert animal.image_url == "https://example.com/noop.jpg"
-
-
-

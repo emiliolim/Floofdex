@@ -1,26 +1,5 @@
-from flask import Flask
-from flask_sqlalchemy import SQLAlchemy
-from flask import jsonify, request
-
-# create app
-app = Flask(__name__)
-# database
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///stuffed_animals.db'
-db = SQLAlchemy(app)
-
-
-# test class
-class StuffedAnimals(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(100), nullable=False)
-    type = db.Column(db.String(50))
-    description = db.Column(db.Text)
-    image_url = db.Column(db.String(200))
-
-
-# create database tables
-with app.app_context():
-    db.create_all()
+from flask import Blueprint, request, jsonify
+from app.models import *
 
 
 @app.route('/animals', methods=['GET'])
@@ -94,10 +73,7 @@ def delete_animal(id):
     # return successful message
     return jsonify({'message': 'animal deleted!'}), 200
 
+
 @app.route('/')
 def home():  # put application's code here
     return 'Welcome to Floofdex!'
-
-
-if __name__ == '__main__':
-    app.run()
