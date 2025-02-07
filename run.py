@@ -1,8 +1,6 @@
-from app import *
-"""
-Calls create_app() function and sets environment variables
-"""
+from app import create_app
 
 app = create_app()
+
 if __name__ == '__main__':
     app.run(debug=True)

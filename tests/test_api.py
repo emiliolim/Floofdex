@@ -1,5 +1,5 @@
 import pytest
-from app.routes import *
+from app.routes import routes
 import warnings
 from sqlalchemy import exc as sa_exc
 
@@ -110,3 +110,28 @@ def test_animals_put(client, test_animal_data):
         assert animal.type == "chicken nugget dino"
         assert animal.description == "this guy is noop!"
         assert animal.image_url == "https://example.com/noop.jpg"
+
+
+def test_animals_delete(client, test_animal_data):
+    """tests DELETE endpoint"""
+    # Add a test animal to the database
+    with app.app_context():
+        test_animal = StuffedAnimals(
+            name="meep",
+            type="dino",
+            description="a green horned dino",
+            image_url="https://example.com/meep.jpg"
+        )
+        db.session.add(test_animal)
+        db.session.commit()
+        animal_id = test_animal.id
+
+    # delete!
+    response = client.delete(f'/animals/{animal_id}')
+    assert response.status_code == 200
+    assert response.get_json() == {"message": "animal deleted!"}
+
+    # verify delete in db
+    with app.app_context():
+        animal = db.session.get(StuffedAnimals, animal_id)
+        assert animal is None
