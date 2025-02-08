@@ -1,5 +1,6 @@
 import pytest
-from app.routes import routes
+from app import create_app, db
+from app.models import StuffedAnimals
 import warnings
 from sqlalchemy import exc as sa_exc
 
@@ -10,6 +11,7 @@ BASE_URL = 'http://127.0.0.1:5000'
 def client():
     """Test client for floofdex"""
     # create sample database from local storage
+    app = create_app('app.config.TestingConfig')
     app.config['TESTING'] = True
     app.config['SQL_ALCHEMY_DATABASE_URI'] = 'sqlite:///:memory'
 
@@ -42,7 +44,7 @@ def test_animal_data():
 def test_animals_get(client):
     """Tests GET endpoint and return type"""
     # Add a test animal to the database
-    with app.app_context():
+    with client.application.app_context():
         test_animal = StuffedAnimals(
             name="meep",
             type="dino",
@@ -69,7 +71,7 @@ def test_animals_post(client, test_animal_data):
     assert response.get_json() == {"message": "animal added!"}
 
     # Verify the animal was added to the database
-    with app.app_context():
+    with client.application.app_context():
         animal = StuffedAnimals.query.first()
         assert animal.name == "meep"
 
@@ -77,7 +79,7 @@ def test_animals_post(client, test_animal_data):
 def test_animals_put(client, test_animal_data):
     """tests PUT endpoint"""
     # Add a test animal to the database
-    with app.app_context():
+    with client.application.app_context():
         test_animal = StuffedAnimals(
             name="meep",
             type="dino",
@@ -104,7 +106,7 @@ def test_animals_put(client, test_animal_data):
     assert response.get_json() == {"message": "animal updated!"}
 
     # verify updates
-    with app.app_context():
+    with client.application.app_context():
         animal = db.session.get(StuffedAnimals, animal_id)
         assert animal.name == "noop"
         assert animal.type == "chicken nugget dino"
@@ -115,7 +117,7 @@ def test_animals_put(client, test_animal_data):
 def test_animals_delete(client, test_animal_data):
     """tests DELETE endpoint"""
     # Add a test animal to the database
-    with app.app_context():
+    with client.application.app_context():
         test_animal = StuffedAnimals(
             name="meep",
             type="dino",
@@ -132,6 +134,6 @@ def test_animals_delete(client, test_animal_data):
     assert response.get_json() == {"message": "animal deleted!"}
 
     # verify delete in db
-    with app.app_context():
+    with client.application.app_context():
         animal = db.session.get(StuffedAnimals, animal_id)
         assert animal is None
