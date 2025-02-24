@@ -1,10 +1,12 @@
 import React from 'react';
+import "./css/animalForm.css"
 // This will handle the form for adding animals
 
 const AnimalForm = ({newAnimal, setNewAnimal, handleNewAnimal}) => {
     return (
-    <div>
-        <h2> Add a new animal!</h2>
+    <div className={"add-animal"}>
+        <h2 className={"prompt-text"}> Add a new animal!</h2>
+        <div className={"prompts"}>
         <input
             type="text"
             placeholder="Name"
@@ -38,6 +40,7 @@ const AnimalForm = ({newAnimal, setNewAnimal, handleNewAnimal}) => {
         }
             />
         <button onClick={handleNewAnimal}>Add New Animal</button>
+    </div>
     </div>
 );
 };

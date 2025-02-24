@@ -3,11 +3,12 @@ import AnimalItem from './AnimalItem';
 
 const AnimalList = ({animals}) => {
     return (
-        <div>
-            <h2>Animal List</h2>
-            <ul>
+        <div className={"scrapbook"}>
+            <h2 className={"scrapbook_title"}>Animal List</h2>
+            {/* Use grid container for scrapbook entries */}
+            <ul className={"scrapbook_grid"}>
                 {animals.map((animal) => (
-                    <AnimalItem key={animal.id} animal={animal} />
+                    <AnimalItem key={animal.id} animal={animal}/>
                 ))}
             </ul>
         </div>
