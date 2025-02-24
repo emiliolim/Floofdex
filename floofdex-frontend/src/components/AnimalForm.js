@@ -1,11 +1,36 @@
-import React from 'react';
+import React, {useState} from 'react';
 import "./css/animalForm.css"
 // This will handle the form for adding animals
 
-const AnimalForm = ({newAnimal, setNewAnimal, handleNewAnimal}) => {
+const AnimalForm = ({newAnimal, setNewAnimal, handleAddAnimal}) => {
+    const [imageFile, setImageFile] = useState(null);
+
+    const handleFileChange = (e) => {
+        setImageFile(e.target.files[0]); // store file
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault(); // prevent default form submission so that we can implement
+        // client side validation
+
+        // create and pass formdata object
+        const formData = new FormData();
+        formData.append('name', newAnimal.name);
+        formData.append('type', newAnimal.type);
+        formData.append('description', newAnimal.description);
+        formData.append('image', imageFile);
+
+        await handleAddAnimal(formData);
+        // reset inputs
+        setNewAnimal({'name': '', type: '', description: '', image_url: '' });
+        setImageFile(null);
+
+    }
+
     return (
     <div className={"add-animal"}>
         <h2 className={"prompt-text"}> Add a new animal!</h2>
+        <form onSubmit={handleSubmit}>
         <div className={"prompts"}>
         <input
             type="text"
@@ -32,15 +57,13 @@ const AnimalForm = ({newAnimal, setNewAnimal, handleNewAnimal}) => {
             }
             />
         <input
-            type="text"
-            placeholder="Image URL"
-            value={newAnimal.image_url}
-            onChange={(e) =>
-                setNewAnimal({ ...newAnimal, image_url: e.target.value })
-        }
+            type={"file"}
+            accept={"image/*"} // images only!
+            onChange={handleFileChange}
             />
-        <button onClick={handleNewAnimal}>Add New Animal</button>
-    </div>
+            <button type={"submit"}>Add New Animal</button>
+        </div>
+        </form>
     </div>
 );
 };

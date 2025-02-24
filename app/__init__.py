@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from .config import Config
 
 db = SQLAlchemy()
 
@@ -11,6 +12,9 @@ def create_app(config_class='app.config.Config'):  # Adjust path if needed
 
     db.init_app(app)
     CORS(app)
+
+    # Initialize the upload folder
+    Config.init_upload_folder(app)
 
     # Register blueprints
     from app.routes import routes

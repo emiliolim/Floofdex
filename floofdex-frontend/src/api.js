@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:5000'; // Flask backend URL
+export const API_URL = 'http://localhost:5000'; // Flask backend URL
 
 export const get_animals = async () => {
     const response = await axios.get(`${API_URL}/animals`);
@@ -18,6 +18,11 @@ export const update_animal = async (id, animal) => {
 };
 
 export const delete_animal = async (id) => {
-    const response = await axios.delete(`${API_URL}/animals/${id}`)
-    return response.data
+    try {
+        const response = await axios.delete(`${API_URL}/animals/${id}`)
+        return response.data
+    } catch(error){
+        console.error('Error deleting animal during API Call:', error);
+        throw error;
+    }
 };

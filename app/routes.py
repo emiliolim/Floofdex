@@ -1,10 +1,19 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, request, jsonify, current_app, send_from_directory
 from app.models import StuffedAnimals
 from sqlalchemy.exc import IntegrityError
 from app import db
+import os
+from werkzeug.utils import secure_filename
 
 # Define a blueprint for routes
 routes = Blueprint('routes', __name__)
+
+
+# Helper function to check allowed file extensions
+def allowed_file(filename):
+    return '.' in filename and \
+        filename.rsplit('.', 1)[1].lower() in current_app.config[
+            'ALLOWED_EXTENSIONS']
 
 
 @routes.route('/animals', methods=['GET'])
@@ -42,19 +51,33 @@ def add_animal():
     """
     :return: adds new animal to animal database
     """
-    data = request.json
+    # form data
+    name = request.form.get('name')
+    type = request.form.get('type')
+    description = request.form.get('description')
+    image = request.files.get('image')
 
     # make sure required fields are present
-    req_fields = ['name', 'type', 'description', 'image_url']
-    if not all(field in data for field in req_fields):
-        return jsonify({'error': 'missing required field'}), 400
+    if not name or not type or not description:
+        return jsonify({'error': 'Missing required fields'}), 400
+
+    if image:
+        # save uploaded image
+        filename = secure_filename(image.filename)
+        filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+        image.save(filepath)
+
+        # store image url
+        image_url = f"/uploads/{filename}"
+    else:
+        image_url = "none.jpg"
 
     try:
         new_animal = StuffedAnimals(
-            name=data['name'],
-            type=data['type'],
-            description=data['description'],
-            image_url=data['image_url']
+            name=name,
+            type=type,
+            description=description,
+            image_url=image_url
         )
         db.session.add(new_animal)
         db.session.commit()
@@ -111,3 +134,9 @@ def delete_animal(id):
 @routes.route('/')
 def home():  # put application's code here
     return 'Welcome to Floofdex!'
+
+
+# Endpoint to serve uploaded images
+@routes.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(current_app.config['UPLOAD_FOLDER'], filename)
