@@ -2,7 +2,8 @@ import React, {useState} from 'react';
 import './css/animalItem.css'
 
 const AnimalItem = ({animal, handleDeleteAnimal}) => {
-    const [imgSrc, setImgSrc] = useState("scrapEntry.PNG");
+    const imageUrl = `http://localhost:5000/${animal.image_url}`;
+    const [imgSrc, setImgSrc] = useState(imageUrl);
 
     return (
         <li id={animal.id} className={"entry"}>
@@ -13,7 +14,7 @@ const AnimalItem = ({animal, handleDeleteAnimal}) => {
                         alt={animal.name}
                         width="100"
                         className={"entry_img"}
-                    onError={() => setImgSrc(animal.image)}/>
+                    onError={() => setImgSrc("scrapEntry.PNG")}/>
                     <p className={"entry_type"}>Type: {animal.type}</p>
                     <p className={"entry_description"}>{animal.description}</p>
                     <button className={"entry_remove"}

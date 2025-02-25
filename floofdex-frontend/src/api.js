@@ -7,8 +7,12 @@ export const get_animals = async () => {
     return response.data;
 };
 
-export const add_animal = async (animal) => {
-    const response = await axios.post(`${API_URL}/animals`, animal);
+export const add_animal = async (formData) => {
+    const response = await axios.post(`${API_URL}/animals`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
     return response.data;
 };
 

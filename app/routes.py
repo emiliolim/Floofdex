@@ -56,6 +56,8 @@ def add_animal():
     type = request.form.get('type')
     description = request.form.get('description')
     image = request.files.get('image')
+    print(image.filename)
+    print(name)
 
     # make sure required fields are present
     if not name or not type or not description:
@@ -64,11 +66,11 @@ def add_animal():
     if image:
         # save uploaded image
         filename = secure_filename(image.filename)
-        filepath = os.path.join(current_app.config['UPLOAD_FOLDER'], filename)
+        filepath = os.path.join('./app/uploads', filename)
         image.save(filepath)
 
         # store image url
-        image_url = f"/uploads/{filename}"
+        image_url = f"./uploads/{filename}"
     else:
         image_url = "none.jpg"
 
