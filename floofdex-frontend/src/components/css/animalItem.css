@@ -41,7 +41,7 @@
     border-radius: 8px; /* rounded borders */
     padding: 1rem;
     /* grid item */
-    background: navajowhite;
+    background: #fbc4ab;
     box-shadow: 5px 6px indianred;
     text-align: center;
     width: 100%;
@@ -58,6 +58,19 @@
     /* circular image */
     border-radius: 50%;
     margin-bottom: 1rem;
+    border: 5px outset #f08080;
+}
+
+.entry_about {
+    border: 4px outset #f08080;
+    width: 200px;
+    border-radius: 8px;
+    background-color: #f8ad9d;
+}
+
+.entry_type {
+    color: black;
+    font-weight: bold;
 }
 
 /* remove button styling */

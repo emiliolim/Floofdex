@@ -1,6 +1,5 @@
 import React, {useState} from 'react';
 import "./css/animalForm.css"
-import {add_animal} from "../api";
 // This will handle the form for adding animals
 
 const AnimalForm = ({newAnimal, setNewAnimal, handleAddAnimal}) => {
@@ -21,7 +20,7 @@ const AnimalForm = ({newAnimal, setNewAnimal, handleAddAnimal}) => {
         formData.append('description', newAnimal.description);
         formData.append('image', imageFile);
 
-        await add_animal(formData);
+        await handleAddAnimal(formData);
         // reset inputs
         setNewAnimal({'name': '', type: '', description: '', image_url: '' });
         setImageFile(null);

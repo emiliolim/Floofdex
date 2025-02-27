@@ -56,8 +56,6 @@ def add_animal():
     type = request.form.get('type')
     description = request.form.get('description')
     image = request.files.get('image')
-    print(image.filename)
-    print(name)
 
     # make sure required fields are present
     if not name or not type or not description:

@@ -1,0 +1,21 @@
+.scrapbook {
+    border: 5px solid brown;
+    border-radius: 8px; /* rounded borders */
+    background:  #ffdab9;
+    box-shadow: 5px 6px indianred;
+    margin: 100px 20px 90px;
+    justify-content: center;
+    width: 90%;
+    padding-left: 10px
+
+}
+
+.scrapbook_title {
+    justify-content: center;
+    margin-bottom: 2rem;
+    margin-left: 1.5rem;
+}
+
+.scrapbook_grid {
+    justify-content: center;
+}
