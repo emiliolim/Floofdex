@@ -83,12 +83,3 @@
     color: black;
     font-weight: bold;
 }
-
-/* remove button styling */
-.entry_remove {
-    border: 2px solid brown;
-    border-radius: 8px;
-    background-color: antiquewhite;
-    box-shadow: 2px 2px indianred;
-    cursor: pointer;
-}

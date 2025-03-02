@@ -16,8 +16,12 @@ export const add_animal = async (formData) => {
     return response.data;
 };
 
-export const update_animal = async (id, animal) => {
-    const response = await axios.put(`${API_URL}/animals/${id}`, animal)
+export const update_animal = async (id, formData) => {
+    const response = await axios.put(`${API_URL}/animals/${id}`, formData, {
+        headers: {
+            'Content-Type': 'multipart/form-data',
+        },
+    });
     return response.data
 };
 

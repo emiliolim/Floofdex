@@ -98,17 +98,16 @@ def update_animal(id):
     animal = StuffedAnimals.query.get_or_404(id)
 
     # get updated data from the request
-    data = request.json
+    name = request.form.get('name')
+    type = request.form.get('type')
+    description = request.form.get('description')
+    image_url = request.form.get('image_url')
 
     # update animal fields
-    if 'name' in data:
-        animal.name = data['name']
-    if 'type' in data:
-        animal.type = data['type']
-    if 'description' in data:
-        animal.description = data['description']
-    if 'image_url' in data:
-        animal.image_url = data['image_url']
+    animal.name = name
+    animal.type = type
+    animal.description = description
+    animal.image_url = image_url
 
     # save changes to db
     db.session.commit()

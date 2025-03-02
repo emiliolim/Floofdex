@@ -2,7 +2,7 @@ import React from 'react';
 import AnimalItem from './AnimalItem';
 import './css/animalList.css'
 
-const AnimalList = ({animals, handleDeleteAnimal}) => {
+const AnimalList = ({animals, handleDeleteAnimal, handleUpdateAnimal}) => {
     return (
         <div className={"scrapbook"}>
             <h2 className={"scrapbook_title"}>My Animal Scrapbook</h2>
@@ -11,7 +11,9 @@ const AnimalList = ({animals, handleDeleteAnimal}) => {
                 {animals.map((animal) => (
                     <AnimalItem key={animal.id}
                                 animal={animal}
-                    handleDeleteAnimal={handleDeleteAnimal} />
+                                handleDeleteAnimal={handleDeleteAnimal}
+                                handleUpdateAnimal={handleUpdateAnimal}
+                    />
                 ))}
             </ul>
         </div>
