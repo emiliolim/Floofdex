@@ -1,3 +1,4 @@
 # images are sensitive
 /uploads
 config.py
+.env
